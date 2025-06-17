@@ -1,0 +1,292 @@
+Do pisania skryptów PowerShell ISE ale:
+	WAZNE
+	Jeśli Get-ExecutionPolicy restricted:
+		Set-ExecutionPolicy Unrestricted
+
+				lub
+
+		Set-ExecutionPolicy Unrestricted -Scope CurrentUser
+	
+		
+
+Write-Host - coś jak echo, wypisanie na ekranie
+Get-Date - aktualna data   (Get-Date).DateTime - pełny format
+Get-Command - pokazuje dostępne komendy
+	-Verb Get - pokazuje komendy z czasownikiem Get
+	- Noun Host - pokazuje komendy z rzeczownikiem Host
+Clear-Host - czysci ekran
+Get-History - pokazuje historie komend
+
+dir | Get-ChildItem
+
+-------------------Zmienne------------
+
+$my_string_variable = "Hello, World!"
+
+$my_input = Read-Host -Prompt "Enter a number"
+
+$zmienna.GetType().Name - typ zmiennej
+
+[Int]$age = 25 - wymuszone przypisanie typu zmiennej
+
+
+$i = $j = $k = 0 - przypisanie kilku zmiennych w linii
+	$number, $color, $bool = 25, "red", $false 
+
+------------------Zmienne srodowiskowe----------
+
+Get-ChildItem Env: - wypisanie zmiennych srod.
+
+(Get-ChildItem Env:EIN_IMAGE).Value - pobranie zawartości zmiennej
+	$Env:EIN_IMAGE
+
+$Env:EXAMPLE_ENV_VAR = "wartość" - stworzenie własnej zmiennej
+
+$Env:PATH += "; costam" -Dodatnie kolejnej wartości do zmiennej srodkowiskowej
+
+-----------------Arytmetyka-------------
+można laczyc stringi "string1" + "string2"
+++ i -- += -= /= *= %=
+-eq	Checks if the two operand values are an exact match
+-ne	Checks if the two operand values are NOT an exact match
+-gt	Checks if the value of the left operand is greater than the value of the right operand
+-lt	Checks if the value of the left operand is less than the value of the right operand
+-ge	Checks if the value of the left operand is greater OR equal to the value of the right operand
+-le	Checks if the value of the left operand is less OR equal to the value of the right operand
+-and -or -not -xor(tylko jeden z nich prawdziwy)
+
+-------------------------------Obiekty i tablice--------------------
+
+Get-Member -InputObject "Codecademy" - przekazuje info o obiekcie
+	"Codecademy" | Get-Member
+
+"hello" | Get-Member -MemberType Property - pokazuje właściwości obiektu tutaj mamy np. length, czyli "hello".Length wyświetl idlugosc
+
+"hello" | Get-Member -MemberType Method - wyświetli metody obiektu
+
+	string.Contains("cos") - sprawdzamy czy string zawiera jakiego znaki
+	string.Replace()
+
+
+	liczba.CompareTo(inna_liczba) - 1 liczba jest wieksza
+					0  liczba sa rowne
+				       -1 liczba jest mniejsza 
+
+
+
+
+$dog = New-Object -TypeName PSCustomObject - stworzenie nowego customowego obiektu
+
+$dog | Add-Member -MemberType NoteProperty -Name "Name" -Value "Rufus"
+$dog | Add-Member -MemberType NoteProperty -Name "Age" -Value 10     Dodawanie właściwości dla obiektu
+
+$dog | Add-Member -MemberType ScriptMethod -Name "speak" -Value { Write-Host "Woof!"} - Dodawanie metod
+
+
+$dog = [PSCustomObject]@{
+    Name = "Rufus"
+    Age = 10
+} - inny sposób dodawania obiektu i właściwości(zmienne)
+$dog | Get-Member -MemberType NoteProperty
+
+
+
+Tablice
+$arr_1 = "cos", "essa", "lol"
+
+$arr_1 = @($True, 5, (Get-Date).DateTime) 
+
+$arr_2 = @( )        
+                     
+$arr_3 = @(                               
+    "Uno"
+    "Dos"
+    "Tres"
+) 
+
+Wyświetlanie tablicy: 
+$nazwa_tablicy 
+$colors[index]
+$colors[index1,index2] - wyświetlenie kilku wartości na raz
+	$food = "pizza", "burrito", "curry", "pho", "fries", "soup"
+	$fast_food = $food[0,1,4]
+
+
+
+$colors[1..3] - wyswietla wartości z przedzialu indexow
+	$colors[2..1] - wyswietla na odwrot
+	$colors[-1] - ostatni obiekt
+
+
+$color[1] = "chuj" - zmiana w tablicy
+
+$colors.ForEach({ $PSItem.Length }) - przejście przez każdy element tablicy i zrobienie czegos. od razu wyswietla 
+
+$liczby1 + $liczby2 - wyświetli polaczone tablice
+$liczby1 * 2 - wyświetli tablice 2 razy
+
+-contains … - sprawdzenie czy zawiera
+-notcontains - sprawdzenie czy_nie_zawiera
+-in - to samo co contains  np. 5 -in $liczby
+
+$tablica = $tablica -join "->"  - łączy rzeczy w tablicy w jeden string za pomocą separatora
+
+[String[]]$fruits = "apple" … - każdy item w tablicy musi być stringiem
+
+
+$dogs_arr = @(
+    [PSCustomObject]@{Name = 'Rufus'; Age = 10}
+    [PSCustomObject]@{Name = 'Miku'; Age = 2}
+)
+
+
+-------------------------------------------------Warunki i pętle-----------------
+
+If 
+
+if ($myVar -lt 0) {
+  Write-Host "A negative number"
+} elseif ($myVar -gt 0) {
+  Write-Host "A positive number"
+} else {
+  Write-Host "Zero"
+}
+
+---------------------------Switch
+
+$myVar = 5
+switch ($myVar) {
+ 10 { 
+   Write-Host "It is 10"
+  }
+  5 { 
+    Write-Host "It is 5" 
+  }
+  default { 
+    Write-Host "Some other number"
+  }
+}
+
+
+
+ $_ to $myVar
+
+zostaną sprawdzone wszystkie warunki - należy dodac break
+
+$myVar = 5
+switch ($myVar) {
+  {$_ -gt 5} { 
+    Write-Host "Greater than 5"
+  }
+  {$_ -lt 5} { 
+    Write-Host "Less than 5" 
+  }
+  default { 
+    Write-Host "It is 5"
+  }
+}
+
+
+-----------------------------For
+
+for ($i = 0; $i -lt 3; $i++) {
+  Write-Host "i is ($i)"
+}
+
+----------------------------ForEach
+
+foreach ($elem in $array) {
+	cos tam
+}f
+
+----------------------------While
+$counter = 0
+while ($counter -lt 3) {
+  $counter++
+  Write-Host "Be sure to update counter"
+}
+
+----------------------------do while
+
+$answer = 4
+do {
+  $input = Read-Host "Guess my number"
+} while ($input -ne $answer)
+Write-Host "Correct!"
+
+---------------------------do Untill (petla wyjdzie czy warunek będzie prawdziwy, czyli robi dopóki cos jest fałszem)
+$answer = 4
+do {
+  $input = Read-Host "Guess my number"
+} until ($input -eq $answer)
+Write-Host "Correct!"
+
+
+
+-----------------------------------------------------Funkcje
+
+Function greet {
+     Write-Host "Hello, there!"
+}
+
+function greet1 {
+  param($name) - umieszcza pierwszy podany parametr w zmiennej $name
+  Write-Host "Hello, $name"
+}
+greet1 "Patryk"
+
+
+function greet2 {
+  param($timeOfDay = "morning" , $name) z defaultem
+  Write-Host "Good $timeOfDay, $name"
+}
+greet2 "Evening" "Patryk"
+
+-------------------------------------------------------------------------
+
+New-Item plik.txt -type file
+Get-FileHash plik - dostanie hasha
+Rename-Item  - zmiana nazwy
+dir | Sort-Object {$_.Name.Length} - sortowanie folderow i plikow w folderze według dlugosci
+Get-Process | Select-Object Id, Name -First 5 - wyświetlenie procesow tylko z id i nazwa, 5 wynikow
+Get-Process | Sort-Object -DESC WorkingSet | Select-Object -First 5  - posortowanie od największego zużycia pamięci, 5 wynikow
+Get-Process | Sort-Object WorkingSet | Select-Object Id, @{L="MemoryUsage";E={$_.WorkingSet}}, Name -First 5  - sortowanie i podmiana nazwy w tabeli
+
+
+param(
+[Int] $dlugosc,
+[Int] $szerokosc)
+$wynik = $dlugosc * $szerokosc
+
+.\Untitled1.ps1 10 5
+
+
+
+wyciagniecie IP
+Get-NetIPAddress
+
+Get-ComputerInfo | Select-Object -ExpandProperty OsName - nazwa systemu
+		bez ExpandProperty pokazuje caly wiersz
+
+
+Test-Path -Path - sprawdza czy istnieje okreslona sciezka, pliki 
+	Test-Path -Path "*.txt"
+
+
+
+
+
+try {
+    $response = Invoke-WebRequest -Uri "https://www.virustotal.com/api/v3/files/$hash"  -Method GET -Headers $headers | ConvertFrom-Json
+}catch {
+    Write-Host "Nie znaleziono odpowiadającego pliku w bazie"
+    exit
+}
+
+#Po pomyślnym uzyskaniu odpowiedzi sprawdzamy czy aplikacja wykryła jakieś zgrożenia
+$stat = $response.data.attributes.last_analysis_stats.malicious
+if ($stat -gt 0){
+    Write-Host "Plik jest szkodliwy!"
+}else{
+    Write-Host "Plik jest nieszkodliwy!"
+}
